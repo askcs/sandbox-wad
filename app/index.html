@@ -19,6 +19,8 @@
 
 
 <body ng-app="restApp">
+
+
 <!--[if lt IE 7]>
 <p class="browsehappy">
   You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade
@@ -36,12 +38,9 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#/">Project name</a>
+      <a class="navbar-brand" href="#/">Ask Backend</a>
     </div>
     <div class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-left">
-        <li><a href="#/intern">Intern</a></li>
-      </ul>
       <form class="navbar-form navbar-right">
         <input type="text" class="form-control" placeholder="Search...">
       </form>
@@ -51,7 +50,26 @@
 
 
 <div class="container-fluid">
-  <div class="row" ng-view=""></div>
+  <div class="row">
+
+    <div class="col-sm-3 col-md-2 sidebar">
+      <ul class="nav nav-sidebar">
+        <li ng-repeat="(_path, values) in paths track by $index"
+            class="{{(_path == path[0].broken[0]) && 'active'}}">
+          <a ng-click="setPath(_path)">{{_path}} ({{values.length}})</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+      <article ng-repeat="_path in path">
+        <h2 class="sub-header">{{_path._path}}</h2>
+        {{_path}}
+        <hr/>
+      </article>
+    </div>
+
+  </div>
 </div>
 
 
@@ -63,7 +81,9 @@
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/json3/lib/json3.min.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
@@ -78,14 +98,13 @@
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/x2js/xml2json.min.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
 
 
 <!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
-<script src="scripts/controllers/main.js"></script>
-<script src="scripts/controllers/intern.js"></script>
 <!-- endbuild -->
 
 </body>
