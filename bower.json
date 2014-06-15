@@ -10,7 +10,8 @@
     "angular-resource": "1.2.16",
     "angular-route": "1.2.16",
     "angular-xml": "~1.0.2",
-    "x2js": "*"
+    "x2js": "*",
+    "underscore": "~1.6.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.16",

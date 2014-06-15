@@ -144,14 +144,27 @@ body {
   margin-right: -21px; /* 20px padding + 1px border */
   margin-bottom: 20px;
   margin-left: -20px;
-}
-.nav-sidebar > li > a {
-  padding-right: 20px;
-  padding-left: 20px;
-}
-.nav-sidebar > .active > a {
-  color: #fff;
-  background-color: #428bca;
+
+  li {
+    a {
+      padding-right: 20px;
+      padding-left: 20px;
+
+      &:hover {
+        color: #fff;
+        background-color: #428bca;
+        cursor: pointer;
+      }
+    }
+  }
+
+  li.active {
+    a {
+      color: #fff;
+      background-color: #428bca;
+      cursor: pointer;
+    }
+  }
 }
 
 
@@ -190,4 +203,22 @@ body {
 .placeholder img {
   display: inline-block;
   border-radius: 50%;
+}
+
+blockquote {
+  font-size: 1em;
+
+  table {
+    border: none;
+    width: 100%;
+    tr {
+      border: none;
+      width: 100%;
+      vertical-align: top;
+      td {
+        border: none;
+        width: 50% !important;
+      }
+    }
+  }
 }

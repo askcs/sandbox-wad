@@ -42,7 +42,10 @@
     </div>
     <div class="navbar-collapse collapse">
       <form class="navbar-form navbar-right">
-        <input type="text" class="form-control" placeholder="Search...">
+        <input type="text"
+               class="form-control"
+               placeholder="Search..."
+               ng-model="q">
       </form>
     </div>
   </div>
@@ -52,21 +55,24 @@
 <div class="container-fluid">
   <div class="row">
 
-    <div class="col-sm-3 col-md-2 sidebar">
-      <ul class="nav nav-sidebar">
-        <li ng-repeat="(_path, values) in paths track by $index"
-            class="{{(_path == path[0].broken[0]) && 'active'}}">
-          <a ng-click="setPath(_path)">{{_path}} ({{values.length}})</a>
-        </li>
-      </ul>
-    </div>
+    <side-bar paths="paths"
+              setPath="setPath"
+              Categories="Categories"></side-bar>
 
     <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
       <article ng-repeat="_path in path">
-        <h2 class="sub-header">{{_path._path}}</h2>
-        {{_path}}
-        <hr/>
+        <h3 class="sub-header">
+          <method name="_path.method._name"></method>
+          {{_path._path}}
+        </h3>
+        <dl>
+          <request data="_path.method.request"></request>
+          <response data="_path.method.response"></response>
+        </dl>
+        <br/>
       </article>
+
     </div>
 
   </div>
@@ -83,21 +89,12 @@
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/affix.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/alert.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/carousel.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/collapse.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/dropdown.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tab.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/transition.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/scrollspy.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/modal.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
-<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
+<script src="bower_components/angular-xml/angular-xml.js"></script>
 <script src="bower_components/x2js/xml2json.min.js"></script>
 <!-- endbower -->
 <!-- endbuild -->
