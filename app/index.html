@@ -50,8 +50,12 @@
         <input type="text"
                class="form-control"
                placeholder="Search..."
-               ng-model="query.$"
-               ng-focus="setSearchFocus()">
+               ng-model="query._path"
+               ng-focus="setSearchFocus()"
+               data-container="body"
+               data-toggle="popover"
+               data-placement="bottom"
+               data-content="There are lots of hamsters trying to build this functionality. Unfortunately not available yet..">
       </form>
     </div>
   </div>
@@ -73,6 +77,8 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/tooltip.js"></script>
+<script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/popover.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-xml/angular-xml.js"></script>

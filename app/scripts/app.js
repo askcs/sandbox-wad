@@ -164,9 +164,15 @@ app.run(
     '$rootScope',
     function ($rootScope)
     {
-      // $rootScope.query = '';
+      $('.navbar-form input').popover();
+
+      $rootScope.query = {
+        $: '',
+        _path: ''
+      };
 
       $rootScope.setSearchFocus = function () { $rootScope.$broadcast('showAll') };
+      // $rootScope.queryPaths     = function () { $rootScope.$broadcast('queryPaths') };
 
       $rootScope.$on(
         '$routeChangeStart',
@@ -189,8 +195,8 @@ app.run(
 app.controller(
   'guideController',
   [
-    '$rootScope', '$scope', 'data',
-    function ($rootScope, $scope, data)
+    '$rootScope', '$scope', '$filter', 'data',
+    function ($rootScope, $scope, $filter, data)
     {
       $scope.data = data;
 
@@ -206,6 +212,13 @@ app.controller(
         'showAll',
         function () { showAll() }
       );
+
+      /*
+      $rootScope.$on(
+        'queryPaths',
+        function () { $filter('filter')($scope.active.paths, $rootScope.query) }
+      );
+      */
 
       $scope.setProxy = function (proxy)
       {
