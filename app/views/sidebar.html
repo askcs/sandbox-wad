@@ -11,7 +11,7 @@
     <ul class="nav nav-sidebar">
       <li ng-repeat="proxy in proxies track by $index"
           class="{{(proxy == active.proxy) && 'active'}}">
-        <a ng-click="setProxy(proxy)">{{proxy}}</a>
+        <a ng-click="setProxy(proxy)">{{proxy}} ({{data.proxies[proxy].length}})</a>
       </li>
     </ul>
   </div>

@@ -164,7 +164,7 @@ app.run(
     '$rootScope',
     function ($rootScope)
     {
-      $rootScope.query = '';
+      // $rootScope.query = '';
 
       $rootScope.setSearchFocus = function () { $rootScope.$broadcast('showAll') };
 
@@ -234,7 +234,10 @@ app.controller(
         };
       };
 
-      $scope.setProxy(Object.keys(data.proxies)[0]);
+      // Select the first one
+      // $scope.setProxy(Object.keys(data.proxies)[0]);
+
+      showAll();
     }
   ]
 );
