@@ -18,113 +18,89 @@ app.
 
 app.
   factory(
-  'ApplicationWadl',
+  'DataSource',
   [
-    '$http', 'categories',
-    function ($http, categories)
+    '$q', '$http', 'categories',
+    function ($q, $http, categories)
     {
       return {
         get: function (callback)
         {
+          var deferred = $q.defer();
+
           $http.get(
             'http://dev.ask-cs.com/application.wadl',
             {
-              transformResponse: function (_data)
+              transformResponse: function (rawXML)
               {
                 var xmlParser = new X2JS();
-                _data = xmlParser.xml_str2json(_data);
+                rawXML = xmlParser.xml_str2json(rawXML);
 
-                var paths = _data.application.resources.resource;
-
-                var data = {
-                  dictionary: {}
-                };
-
-                _.each(
-                  paths,
-                  function (node)
-                  {
-                    node.broken = node._path.split('/');
-
-                    node.broken.shift();
-
-                    node.proxy = node.broken[0];
-
-                    if (! node.method.request.hasOwnProperty('param'))
-                    {
-                      node.method.request = {
-                        param: []
-                      };
-                    }
-
-                    if (! angular.isArray(node.method.request.param))
-                    {
-                      var tmp = [];
-
-                      tmp.push(node.method.request.param);
-
-                      node.method.request.param = tmp;
-                    }
-
-                    data.dictionary[node._path] = node;
-                  }
-                );
-
-                console.log('data ->', data);
-
-                var indexed = _.sortBy(paths, function (path) { return path.proxy });
-
-                indexed = _.groupBy(indexed, 'proxy');
-
-                // console.log('oaths ->', paths);
-
-
-                //                var indexed = {};
-                //
-                //                _.each(
-                //                  categories,
-                //                  function (interfaces, category)
-                //                  {
-                //                    if (! indexed.hasOwnProperty(category)) { indexed[category] = [] }
-                //
-                //                    _.each(
-                //                      paths,
-                //                      function (proxies)
-                //                      {
-                //                        _.each(
-                //                          proxies,
-                //                          function (path)
-                //                          {
-                //
-                //                            console.log('path ->', path);
-                //
-                //                            var index = interfaces.indexOf(path.proxy);
-                //
-                //                            if (index > -1)
-                //                            {
-                //                              indexed[category].push(path);
-                //
-                //                              paths.splice(index, 1);
-                //                            }
-                //                          }
-                //                        )
-                //                      }
-                //                    )
-                //                  }
-                //                );
-                //
-                //                console.log('indexed ->', indexed);
-
-
-                return {
-                  all: paths,
-                  indexed: indexed
-                };
+                return rawXML.application.resources.resource;
               }
             }
           ).success(
-            function (data) { callback(data) }
+            function (paths)
+            {
+              var data = {
+                dictionary: {},
+                proxies: {}
+              };
+
+              _.each(
+                paths,
+                function (path)
+                {
+                  path.broken = path._path.split('/');
+
+                  path.broken.shift();
+
+                  path.proxy = path.broken[0];
+
+                  if (! path.method.request.hasOwnProperty('param'))
+                  {
+                    path.method.request = {
+                      param: []
+                    };
+                  }
+
+                  if (! angular.isArray(path.method.request.param))
+                  {
+                    var tmp = [];
+
+                    tmp.push(path.method.request.param);
+
+                    path.method.request.param = tmp;
+                  }
+                }
+              );
+
+              paths = _.sortBy(paths, function (path) { return path.proxy });
+
+              _.each(
+                paths,
+                function (path)
+                {
+                  var key = path._path + '-' + path.method._name;
+
+                  data.dictionary[key] = path;
+
+                  if (! data.proxies[path.proxy])
+                  {
+                    data.proxies[path.proxy] = [];
+                  }
+
+                  data.proxies[path.proxy].push(key);
+                }
+              );
+
+              console.log('data ->', data);
+
+              deferred.resolve(data);
+            }
           );
+
+          return deferred.promise;
         }
       }
     }
@@ -133,21 +109,20 @@ app.
 
 app.run(
   [
-    '$rootScope', 'ApplicationWadl',
-    function ($rootScope, ApplicationWadl)
+    '$rootScope', 'DataSource',
+    function ($rootScope, DataSource)
     {
-      $rootScope.init = (function ()
-      {
-        ApplicationWadl.get(
-          function (paths)
-          {
-            $rootScope.paths = paths.indexed;
+      DataSource.get()
+        .then(
+        function (data)
+        {
+          $rootScope.data = data;
 
-            // console.log('all ->', paths.all);
-            $rootScope.setPath(Object.keys($rootScope.paths)[0]);
-          }
-        );
-      })();
+          $rootScope.paths = data.list;
+
+          $rootScope.setProxy(Object.keys(data.proxies)[0]);
+        }
+      );
 
       $rootScope.q = '';
 
@@ -157,27 +132,41 @@ app.run(
         {
           if (value != '')
           {
-            console.log('some value here ->');
-            
-//            ApplicationWadl.get(
-//              function (paths)
-//              {
-//                console.log('paths ->', paths);
-//
-//                $rootScope.paths = paths.all;
-//              }
-//            );
+            console.log('some value');
           }
           else
           {
-            // $rootScope.init();
+            console.log('defaults');
           }
         }
       );
 
-      $rootScope.setPath = function (path)
+      $rootScope.setProxy = function (proxy)
       {
-        $rootScope.path = $rootScope.paths[path];
+        if (proxy == 'all')
+        {
+          $rootScope.active = {
+            proxy: 'all',
+            paths: $rootScope.data.dictionary
+          };
+        }
+        else
+        {
+          var paths = [];
+
+          _.each(
+            $rootScope.data.proxies[proxy],
+            function (path)
+            {
+              paths.push($rootScope.data.dictionary[path]);
+            }
+          );
+
+          $rootScope.active = {
+            proxy: proxy,
+            paths: paths
+          };
+        }
       };
     }
   ]

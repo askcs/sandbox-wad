@@ -2,12 +2,12 @@
 
   <h4>General</h4>
   <ul class="nav nav-sidebar">
-    <!--<li>-->
-      <!--<a ng-click="setPath('all')">- show all -</a>-->
-    <!--</li>-->
-    <li ng-repeat="(_path, values) in paths track by $index"
-        class="{{(_path == path[0].broken[0]) && 'active'}}">
-      <a ng-click="setPath(_path)">{{_path}} ({{values.length}})</a>
+    <li class="{{(active.proxy == 'all') && 'active'}}">
+      <a ng-click="setProxy('all')">- show all -</a>
+    </li>
+    <li ng-repeat="(proxy, values) in data.proxies track by $index"
+        class="{{(proxy == active.proxy) && 'active'}}">
+      <a ng-click="setProxy(proxy)">{{proxy}} ({{values.length}})</a>
     </li>
   </ul>
 
