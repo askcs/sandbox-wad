@@ -166,60 +166,72 @@ app.run(
     {
       $rootScope.query = '';
 
-      $rootScope.setSearchFocus = function ()
-      {
-        $rootScope.active = {
-          proxy: 'all',
-          paths: $rootScope.data.dictionary
-        };
-      };
+      $rootScope.setSearchFocus = function () { $rootScope.$broadcast('showAll') };
 
-      //      $rootScope.$watch(
-      //        'query',
-      //        function (query)
-      //        {
-      //        }
-      //      );
+      $rootScope.$on(
+        '$routeChangeStart',
+        function () {}
+      );
+
+      $rootScope.$on(
+        '$routeChangeSuccess',
+        function () {}
+      );
+
+      $rootScope.$on(
+        '$routeChangeError',
+        function (event, current, previous, rejection) {}
+      );
     }
   ]
 );
 
-'use strict';
-
 app.controller(
   'guideController',
   [
-    '$scope', 'data',
-    function ($scope, data)
+    '$rootScope', '$scope', 'data',
+    function ($rootScope, $scope, data)
     {
       $scope.data = data;
 
+      function showAll ()
+      {
+        $scope.active = {
+          proxy: 'all',
+          paths: $scope.data.dictionary
+        };
+      }
+
+      $rootScope.$on(
+        'showAll',
+        function () { showAll() }
+      );
+
       $scope.setProxy = function (proxy)
       {
+        angular.element(window).scrollTop(0);
+
         if (proxy == 'all')
         {
-          $scope.active = {
-            proxy: 'all',
-            paths: $scope.data.dictionary
-          };
-        }
-        else
-        {
-          var paths = [];
+          showAll();
 
-          _.each(
-            $scope.data.proxies[proxy],
-            function (path)
-            {
-              paths.push($scope.data.dictionary[path]);
-            }
-          );
-
-          $scope.active = {
-            proxy: proxy,
-            paths: paths
-          };
+          return true;
         }
+
+        var paths = [];
+
+        _.each(
+          $scope.data.proxies[proxy],
+          function (path)
+          {
+            paths.push($scope.data.dictionary[path]);
+          }
+        );
+
+        $scope.active = {
+          proxy: proxy,
+          paths: paths
+        };
       };
 
       $scope.setProxy(Object.keys(data.proxies)[0]);
@@ -292,38 +304,8 @@ app.directive(
         indexed['General'] = proxies;
 
         $scope.indexed = indexed;
-
-//        _.each(
-//          indexed,
-//          function (paths)
-//          {
-//            _.each(
-//              paths,
-//              function (proxy)
-//              {
-//                var paths = [];
-//
-//                _.each(
-//                  $scope.data.proxies[proxy],
-//                  function (path)
-//                  {
-//                    paths.push($scope.data.dictionary[path]);
-//                  }
-//                );
-//
-//                proxy = paths;
-//              }
-//            )
-//          }
-//        );
-//
-//        console.log('indexed ->', indexed);
-
       },
-      link: function (scope, element, attrs, ctrl)
-      {
-
-      }
+      link: function (scope, element, attrs, ctrl) {}
     }
   }
 );
@@ -355,7 +337,12 @@ app.directive(
       scope: {
         data: '='
       },
-      link: function (scope) { scope.response = scope.data.representation._mediaType }
+      link: function (scope)
+      {
+        scope.response = scope.data.representation._mediaType;
+
+        scope.state = (/java/.test(scope.response)) ? 'danger' : 'info';
+      }
     }
   }
 );
