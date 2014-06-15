@@ -41,11 +41,15 @@
       <a class="navbar-brand" href="#/">Ask Backend</a>
     </div>
     <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="#/guide">Guide</a></li>
+      </ul>
       <form class="navbar-form navbar-right">
         <input type="text"
                class="form-control"
                placeholder="Search..."
-               ng-model="q">
+               ng-model="query"
+               ng-focus="setSearchFocus()">
       </form>
     </div>
   </div>
@@ -53,29 +57,7 @@
 
 
 <div class="container-fluid">
-  <div class="row">
-
-    <side-bar paths="paths"
-              setPath="setPath"
-              Categories="Categories"></side-bar>
-
-    <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-
-      <article ng-repeat="path in active.paths track by $index">
-        <h3 class="sub-header">
-          <method name="path.method._name"></method>
-          {{path._path}}
-        </h3>
-        <dl>
-          <request data="path.method.request"></request>
-          <response data="path.method.response"></response>
-        </dl>
-        <br/>
-      </article>
-
-    </div>
-
-  </div>
+  <div class="row" ng-view=""></div>
 </div>
 
 
@@ -84,25 +66,18 @@
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <![endif]-->
 
-<!-- build:js scripts/vendor.js -->
-<!-- bower:js -->
 <script src="bower_components/jquery/dist/jquery.js"></script>
 <script src="bower_components/es5-shim/es5-shim.js"></script>
 <script src="bower_components/angular/angular.js"></script>
-<script src="bower_components/underscore/underscore.js"></script>
 <script src="bower_components/json3/lib/json3.min.js"></script>
 <script src="bower_components/bootstrap-sass-official/vendor/assets/javascripts/bootstrap/button.js"></script>
 <script src="bower_components/angular-resource/angular-resource.js"></script>
 <script src="bower_components/angular-route/angular-route.js"></script>
 <script src="bower_components/angular-xml/angular-xml.js"></script>
 <script src="bower_components/x2js/xml2json.min.js"></script>
-<!-- endbower -->
-<!-- endbuild -->
+<script src="bower_components/underscore/underscore.js"></script>
 
-
-<!-- build:js({.tmp,app}) scripts/scripts.js -->
 <script src="scripts/app.js"></script>
-<!-- endbuild -->
 
 </body>
 </html>

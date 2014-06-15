@@ -11,20 +11,74 @@ app.
   constant(
   'categories',
   {
-    StandBy: ['calc_planning', 'divisions'],
-    TeamUp: ['client', 'clients', 'team', 'teams']
+    StandBy: [
+      'askatars',
+      'calc_planning',
+      'calendar',
+      'divisions',
+      'capcodes',
+      'groups',
+      'network',
+      'node',
+      'p2000',
+      'p2000guard',
+      'slots'
+    ],
+    TeamUp: [
+      'avatar',
+      'client',
+      'clients',
+      'team',
+      'teams',
+      'clientGroup',
+      'tasks'
+    ],
+    AskFast: [
+      'askfast',
+      'channels'
+    ]
   }
+);
+
+app
+  .config(
+  [
+    '$locationProvider', '$routeProvider',
+    function ($locationProvider, $routeProvider)
+    {
+      $routeProvider
+        .when(
+        '/guide',
+        {
+          templateUrl: 'views/guide.html',
+          controller: 'guideController',
+          resolve: {
+            data: [
+              'DataSource',
+              function (DataSource)
+              {
+                return DataSource.get();
+              }
+            ]
+          }
+        })
+        .otherwise(
+        {
+          redirectTo: '/guide'
+        });
+    }
+  ]
 );
 
 app.
   factory(
   'DataSource',
   [
-    '$q', '$http', 'categories',
-    function ($q, $http, categories)
+    '$q', '$http',
+    function ($q, $http)
     {
       return {
-        get: function (callback)
+        get: function ()
         {
           var deferred = $q.defer();
 
@@ -94,8 +148,6 @@ app.
                 }
               );
 
-              console.log('data ->', data);
-
               deferred.resolve(data);
             }
           );
@@ -109,45 +161,46 @@ app.
 
 app.run(
   [
-    '$rootScope', 'DataSource',
-    function ($rootScope, DataSource)
+    '$rootScope',
+    function ($rootScope)
     {
-      DataSource.get()
-        .then(
-        function (data)
-        {
-          $rootScope.data = data;
+      $rootScope.query = '';
 
-          $rootScope.paths = data.list;
+      $rootScope.setSearchFocus = function ()
+      {
+        $rootScope.active = {
+          proxy: 'all',
+          paths: $rootScope.data.dictionary
+        };
+      };
 
-          $rootScope.setProxy(Object.keys(data.proxies)[0]);
-        }
-      );
+      //      $rootScope.$watch(
+      //        'query',
+      //        function (query)
+      //        {
+      //        }
+      //      );
+    }
+  ]
+);
 
-      $rootScope.q = '';
+'use strict';
 
-      $rootScope.$watch(
-        'q',
-        function (value)
-        {
-          if (value != '')
-          {
-            console.log('some value');
-          }
-          else
-          {
-            console.log('defaults');
-          }
-        }
-      );
+app.controller(
+  'guideController',
+  [
+    '$scope', 'data',
+    function ($scope, data)
+    {
+      $scope.data = data;
 
-      $rootScope.setProxy = function (proxy)
+      $scope.setProxy = function (proxy)
       {
         if (proxy == 'all')
         {
-          $rootScope.active = {
+          $scope.active = {
             proxy: 'all',
-            paths: $rootScope.data.dictionary
+            paths: $scope.data.dictionary
           };
         }
         else
@@ -155,19 +208,21 @@ app.run(
           var paths = [];
 
           _.each(
-            $rootScope.data.proxies[proxy],
+            $scope.data.proxies[proxy],
             function (path)
             {
-              paths.push($rootScope.data.dictionary[path]);
+              paths.push($scope.data.dictionary[path]);
             }
           );
 
-          $rootScope.active = {
+          $scope.active = {
             proxy: proxy,
             paths: paths
           };
         }
       };
+
+      $scope.setProxy(Object.keys(data.proxies)[0]);
     }
   ]
 );
@@ -214,13 +269,60 @@ app.directive(
       transclude: true,
       templateUrl: 'views/sidebar.html',
       require: 'sideBar',
-      controller: function (categories)
+      controller: function ($scope, categories)
       {
-        this.Categories = categories;
+        var proxies = [],
+            indexed = {};
+
+        _.each(
+          $scope.data.proxies,
+          function (list, proxy) { proxies.push(proxy) }
+        );
+
+        _.each(
+          categories,
+          function (interfaces, category)
+          {
+            indexed[category] = _.intersection(proxies, interfaces);
+
+            proxies = _.difference(proxies, indexed[category]);
+          }
+        );
+
+        indexed['General'] = proxies;
+
+        $scope.indexed = indexed;
+
+//        _.each(
+//          indexed,
+//          function (paths)
+//          {
+//            _.each(
+//              paths,
+//              function (proxy)
+//              {
+//                var paths = [];
+//
+//                _.each(
+//                  $scope.data.proxies[proxy],
+//                  function (path)
+//                  {
+//                    paths.push($scope.data.dictionary[path]);
+//                  }
+//                );
+//
+//                proxy = paths;
+//              }
+//            )
+//          }
+//        );
+//
+//        console.log('indexed ->', indexed);
+
       },
       link: function (scope, element, attrs, ctrl)
       {
-        // sconsole.log('paths ->', ctrl.Categories);
+
       }
     }
   }
