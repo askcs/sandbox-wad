@@ -1,0 +1,33 @@
+<dt ng-show="data.param.length > 0">
+  <span class="text-muted">Request parameters ({{data.param.length}})</span>
+</dt>
+<dd ng-show="data.param.length > 0">
+  <blockquote>
+
+    <table>
+      <tr>
+        <td ng-show="_params.query.length > 0">
+          <div>
+            <h5>Query parameters ({{_params.query.length}})</h5>
+            <ul>
+              <li ng-repeat="param in _params.query">
+                {{param._name}}
+              </li>
+            </ul>
+          </div>
+        </td>
+        <td ng-show="_params.path.length > 0">
+          <div>
+            <h5>Path ({{_params.path.length}})</h5>
+            <ul>
+              <li ng-repeat="param in _params.path">
+                {{param._name}}
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </blockquote>
+</dd>

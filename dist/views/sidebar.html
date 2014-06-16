@@ -1,0 +1,19 @@
+<div class="col-sm-3 col-md-2 sidebar">
+
+  <ul class="nav nav-sidebar">
+    <li class="{{(active.proxy == 'all') && 'active'}}">
+      <a ng-click="setProxy('all')">- show all -</a>
+    </li>
+  </ul>
+
+  <div ng-repeat="(section, proxies) in indexed">
+    <h4>{{section}}</h4>
+    <ul class="nav nav-sidebar">
+      <li ng-repeat="proxy in proxies track by $index"
+          class="{{(proxy == active.proxy) && 'active'}}">
+        <a ng-click="setProxy(proxy)">{{proxy}} ({{data.proxies[proxy].length}})</a>
+      </li>
+    </ul>
+  </div>
+
+</div>
