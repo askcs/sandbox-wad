@@ -327,6 +327,24 @@ app.directive(
 );
 
 app.directive(
+  'documentation',
+  function ()
+  {
+    return {
+      restrict: 'E',
+      transclude: true,
+      templateUrl: 'views/documentation.html',
+      scope: {
+        data: '='
+      },
+      link: function (scope)
+      {
+      }
+    }
+  }
+);
+
+app.directive(
   'request',
   function ()
   {
@@ -337,7 +355,7 @@ app.directive(
       scope: {
         data: '='
       },
-      link: function (scope) { scope._params = _.groupBy(scope.data.param, '_type') }
+      link: function (scope) { scope._params = _.groupBy(scope.data.param, '_style') }
     }
   }
 );

@@ -9,21 +9,27 @@
         <td ng-show="_params.query.length > 0">
           <div>
             <h5>Query parameters ({{_params.query.length}})</h5>
-            <ul>
-              <li ng-repeat="param in _params.query">
-                {{param._name}}
-              </li>
-            </ul>
+
+            <table class="table table-bordered table-condensed">
+              <tr ng-repeat="param in _params.query">
+                <td>{{param._name}}</td>
+                <td><span class="badge">{{param._type}}</span></td>
+              </tr>
+            </table>
+
           </div>
         </td>
         <td ng-show="_params.path.length > 0">
           <div>
             <h5>Path ({{_params.path.length}})</h5>
-            <ul>
-              <li ng-repeat="param in _params.path">
-                {{param._name}}
-              </li>
-            </ul>
+
+            <table class="table table-bordered table-condensed">
+              <tr ng-repeat="param in _params.path">
+                <td>{{param._name}}</td>
+                <td><span class="badge">{{param.path}}</span></td>
+              </tr>
+            </table>
+
           </div>
         </td>
       </tr>
